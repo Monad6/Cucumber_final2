@@ -34,16 +34,21 @@ public class EndToEndSteps {
         homePage.clickonLoginlink();
     }
 
-    @When("user enters username and password and press on LogIn button")
-    public void userEntersUsernameAndPasswordAndPressOnLogInButton(String username , String password) throws InterruptedException {
+    @When("user enters {string} and {string} and press on LogIn button")
+    public void userEntersUsernameAndPasswordAndPressOnLogInButton(String username, String password) throws InterruptedException {
         loginPage = new LoginPage(driver);
-        loginPage.insertUserName("Monad");
+        loginPage.insertUserName(username);
         Thread.sleep(1000);
-        loginPage.insertPassword("monad1234");
+        loginPage.insertPassword(password);
         loginPage.clickonloginbutton();
         Thread.sleep(1000);
-        productOnePage.clickhomebutton();
+    }
 
+    @Then("user should be logged in successfully")
+    public void userShouldBeLoggedInSuccessfully() {
+        String actualResult = loginPage.getverificationofuser().toLowerCase().trim();
+        String expectedResult = "welcome monad";
+        Assert.assertEquals(actualResult, expectedResult, "Login verification failed!");
     }
 
     @When("user adds the first product {string} to the cart")
@@ -76,35 +81,55 @@ public class EndToEndSteps {
     }
 
     @Then("cart should contains the products")
-    public void cartShouldContainsTheProducts() {
-        List<String> actualResultNames = cartPage.getAllCartItemTitles();
-        List<String> actualResultPrices = cartPage.getAllCartItemPrices();
-        List<String> expectedResultNames = Arrays.asList("Samsung galaxy s6 ", "Nexus 6");
-        List<String> expectedResultPrices = Arrays.asList("360", "650");
-        Assert.assertEquals(actualResultNames.containsAll(expectedResultNames), "Not all expected results are found");
-        Assert.assertTrue(actualResultPrices.containsAll(expectedResultPrices), "Not all expected prices are found");
+    public void cartShouldContainsTheProducts() throws InterruptedException {
+        // Wait for 2 seconds to ensure cart items are loaded
+        Thread.sleep(2000);
+
+        // Step 1: Validate Cart - Ensure both products are in the cart
+        String expectedTitle1 = "Samsung galaxy s6";
+        String expectedPrice1 = "360";
+        String expectedTitle2 = "Nexus 6";
+        String expectedPrice2 = "650";
+
+        // Log actual values for debugging
+        String actualTitle1 = cartPage.getCartItemTitle(0).trim();  // Corrected index
+        String actualTitle2 = cartPage.getCartItemTitle(1).trim();  // Corrected index
+        String actualPrice1 = cartPage.getCartItemPrice(0).trim();  // Corrected index
+        String actualPrice2 = cartPage.getCartItemPrice(1).trim();  // Corrected index
+
+        System.out.println("Actual Item 1: " + actualTitle1);
+        System.out.println("Actual Price 1: " + actualPrice1);
+        System.out.println("Actual Item 2: " + actualTitle2);
+        System.out.println("Actual Price 2: " + actualPrice2);
+
+
+        // Validate Cart Items
+        boolean itemsAreCorrect = cartPage.validateCartItems(expectedTitle1, expectedTitle2, expectedPrice1, expectedPrice2);
+        Assert.assertTrue(itemsAreCorrect, "Cart items are incorrect!");
     }
 
     @And("total price should be {int}")
     public void totalPriceShouldBe(int expectedTotal) {
-        boolean isCorrectTotal = cartPage.verifyTotal(String.valueOf(expectedTotal));
-        Assert.assertTrue(isCorrectTotal, "Total price does not match expected value.");
+        boolean totalIsCorrect = cartPage.verifyTotal(String.valueOf(expectedTotal));
+        Assert.assertTrue(totalIsCorrect, "Total amount is not correct!");
     }
 
+
+
     @When("users enters place order")
-    public void usersEntersPlaceOrder(DataTable dataTable) {
+    public void users_enters_place_order(DataTable dataTable) {
         List<Map<String, String>> data = dataTable.asMaps(String.class, String.class);
-        Map<String, String> userData = data.get(0);
+        Map<String, String> row = data.get(0); // Only one row expected
 
-        String name = userData.get("Name");
-        String country = userData.get("Country");
-        String city = userData.get("city");
-        String card = userData.get("card");
-        String month = userData.get("Month");
-        String year = userData.get("Year");
+        String name = row.get("Name");
+        String country = row.get("Country");
+        String city = row.get("city");
+        String card = row.get("card");
+        String month = row.get("Month");
+        String year = row.get("Year");
 
-        boolean isSuccess = cartPage.completeCheckout(name, country, city, card, month, year);
-        Assert.assertTrue(isSuccess, "Checkout was not successful.");
+        boolean checkoutSuccess = cartPage.completeCheckout(name, country, city, card, month, year);
+        Assert.assertTrue(checkoutSuccess, "Checkout failed – confirmation not displayed.");
     }
 
     @Then("confirmation message should appear {string}")

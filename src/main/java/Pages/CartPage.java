@@ -87,7 +87,7 @@ public class CartPage {
     }
 
     // Complete Checkout
-    public boolean completeCheckout(String name, String country, String city, String card, String month, String year)  {
+    public boolean completeCheckout(String name, String country, String city, String card, String month, String year) {
         wait.until(ExpectedConditions.elementToBeClickable(placeOrderButton)).click();
 
         wait.until(ExpectedConditions.visibilityOfElementLocated(namebox)).sendKeys(name);
@@ -97,28 +97,12 @@ public class CartPage {
         driver.findElement(monthbox).sendKeys(month);
         driver.findElement(yearbox).sendKeys(year);
         driver.findElement(purchaseButton).click();
+
         return wait.until(ExpectedConditions.visibilityOfElementLocated(textmsg)).isDisplayed();
     }
+
     public String getText() {
         return driver.findElement(textmsg).getText().trim();
-    }
-    // Get all item titles in cart
- // Make sure this is imported
-
-    public List<String> getAllCartItemTitles() {
-        wait.until(ExpectedConditions.visibilityOfElementLocated(carttable));
-        List<WebElement> rows = driver.findElement(carttable).findElements(By.tagName("tr"));
-        return rows.stream()
-                .map(row -> row.findElements(By.tagName("td")).get(1).getText().trim().toLowerCase())
-                .collect(Collectors.toList());
-    }
-
-    public List<String> getAllCartItemPrices() {
-        wait.until(ExpectedConditions.visibilityOfElementLocated(carttable));
-        List<WebElement> rows = driver.findElement(carttable).findElements(By.tagName("tr"));
-        return rows.stream()
-                .map(row -> row.findElements(By.tagName("td")).get(2).getText().trim())
-                .collect(Collectors.toList());
     }
 
 

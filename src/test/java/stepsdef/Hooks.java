@@ -11,20 +11,21 @@ public class Hooks {
 
     @Before
     public void SetUp() {
-        WebDriverManager.chromedriver().setup();
-        driver = new ChromeDriver();
-        driver.manage().window().maximize();
-        driver.get("https://demoblaze.com/");
+        if (driver == null) {
+            WebDriverManager.chromedriver().setup();
+            driver = new ChromeDriver();
+            driver.manage().window().maximize();
+            driver.get("https://demoblaze.com/");
+        }
     }
+
 
     @After
     public void closeBrowser() {
-        if (driver != null) {
             driver.quit();
-            driver = null;
-        }
-
     }
+
+
 
     public static WebDriver getDriver() {
 

@@ -35,10 +35,14 @@ public class EndToEndSteps {
     }
 
     @When("user enters username and password and press on LogIn button")
-    public void userEntersUsernameAndPasswordAndPressOnLogInButton() throws InterruptedException {
+    public void userEntersUsernameAndPasswordAndPressOnLogInButton(String username , String password) throws InterruptedException {
+        loginPage = new LoginPage(driver);
         loginPage.insertUserName("Monad");
         Thread.sleep(1000);
         loginPage.insertPassword("monad1234");
+        loginPage.clickonloginbutton();
+        Thread.sleep(1000);
+        productOnePage.clickhomebutton();
 
     }
 

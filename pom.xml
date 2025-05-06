@@ -5,14 +5,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.example</groupId>
-    <artifactId>Cucumber</artifactId>
+    <artifactId>Automation_69</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <cucumber.version>7.20.1</cucumber.version>
     </properties>
 
     <dependencies>
@@ -30,7 +29,7 @@
             <version>5.9.2</version>
         </dependency>
 
-        <!-- TestNG (only if needed, since you're using Cucumber) -->
+        <!-- TestNG -->
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
@@ -38,48 +37,39 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- Cucumber Core -->
+        <!-- Cucumber Java -->
         <dependency>
             <groupId>io.cucumber</groupId>
             <artifactId>cucumber-java</artifactId>
-            <version>${cucumber.version}</version>
+            <version>7.14.0</version>
         </dependency>
 
-        <!-- Cucumber JUnit (for running tests) -->
-        <dependency>
-            <groupId>io.cucumber</groupId>
-            <artifactId>cucumber-junit</artifactId>
-            <version>${cucumber.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- Cucumber TestNG (only if using TestNG) -->
-        <!--
+        <!-- Cucumber TestNG integration -->
         <dependency>
             <groupId>io.cucumber</groupId>
             <artifactId>cucumber-testng</artifactId>
-            <version>${cucumber.version}</version>
+            <version>7.14.0</version>
         </dependency>
-        -->
     </dependencies>
 
     <build>
         <plugins>
 
-            <!-- Surefire Plugin -->
+            <!-- Surefire Plugin: For executing tests -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.1.2</version>
                 <configuration>
+                    <testFailureIgnore>true</testFailureIgnore>
+                    <runOrder>alphabetical</runOrder>
                     <includes>
-                        <include>**/Runner*.java</include>
+                        <include>**/runner/TestRunner.java</include>
                     </includes>
-                    <testFailureIgnore>false</testFailureIgnore>
                 </configuration>
             </plugin>
 
-            <!-- Cucumber Reporting -->
+            <!-- Cucumber Reporting Plugin -->
             <plugin>
                 <groupId>net.masterthought</groupId>
                 <artifactId>maven-cucumber-reporting</artifactId>
@@ -105,5 +95,4 @@
 
         </plugins>
     </build>
-
 </project>
